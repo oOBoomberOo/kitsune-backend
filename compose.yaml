@@ -7,3 +7,18 @@ services:
       - 'POSTGRES_USER=spring'
     ports:
       - '8081:5432'
+  backend:
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - 'DATABASE_URL=jdbc:postgresql://postgres:5432/dev?useSSL=false'
+      - 'DATABASE_USER=spring'
+      - 'DATABASE_PASS=secret'
+    ports:
+      - '8080:8080'
+networks:
+  kitsune:
+    driver: bridge

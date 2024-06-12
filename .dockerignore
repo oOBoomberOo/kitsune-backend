@@ -1,0 +1,3 @@
+# ignore non-essential files in java project
+target/
+.idea/
