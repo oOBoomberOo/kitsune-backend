@@ -1,0 +1,12 @@
+spring.application.name: kitsune-backend
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:8081/dev?useSSL=false
+    username: spring
+    password: secret
+  flyway:
+    baseline-on-migrate: true
+
+server:
+  port: 8080
