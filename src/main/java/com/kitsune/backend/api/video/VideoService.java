@@ -45,7 +45,7 @@ public class VideoService {
 
     public List<Video> findVideoToBeRecord() {
         log.info("Finding videos to be recorded");
-        return videoRepository.findVideosByStatusIn(ACTIVE);
+        return videoRepository.findRunningVideos(ACTIVE);
     }
 
     public List<Video> findPanickedVideos() {
