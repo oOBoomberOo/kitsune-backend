@@ -1,6 +1,5 @@
 package com.kitsune.backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kitsune.backend.constant.PostgresTime;
 import com.kitsune.backend.model.VideoStatus;
 import com.kitsune.backend.model.VideoType;
@@ -12,7 +11,6 @@ import org.hibernate.generator.EventType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -58,11 +56,6 @@ public class Video {
     @Column
     @With
     String panicMessage;
-
-    @OneToMany(mappedBy = "video")
-    @ToString.Exclude
-    @JsonIgnore
-    List<Record> records;
 
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(endAt);
