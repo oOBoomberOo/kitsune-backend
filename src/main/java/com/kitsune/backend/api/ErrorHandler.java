@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ErrorHandler {
 
     @ExceptionHandler(APIException.class)
-    public ResponseEntity<ErrorResponse> apiException(APIException exception) {
-        return exception.toResponse();
+    public ResponseEntity<APIException> apiException(APIException exception) {
+        return ResponseEntity.status(exception.getStatus()).body(exception);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

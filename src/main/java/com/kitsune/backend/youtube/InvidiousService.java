@@ -1,6 +1,7 @@
 package com.kitsune.backend.youtube;
 
 import com.kitsune.backend.api.video.VideoInfo;
+import com.kitsune.backend.error.RaceException;
 import com.kitsune.backend.model.VideoType;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -30,18 +32,12 @@ public class InvidiousService {
                 .map(function)
                 .toList();
 
-        return Mono.firstWithValue(instances);
+        return Mono.firstWithValue(instances)
+                .onErrorMap(err -> RaceException.from(Exceptions.unwrapMultiple(err.getCause())));
     }
 
     public <T> Mono<T> race(@NotNull String path, @NotNull Map<String, ?> variables, @NotNull Class<T> type) {
-        return race(instance -> instance.get(path, variables, type)
-                .doOnNext(data -> {
-                    log.info("Fetched {}: {}", path, data);
-                })
-                .doOnError(error -> {
-                    log.error("Failed to fetch {}: {}", path, error.getMessage());
-                })
-        );
+        return race(instance -> instance.get(path, variables, type));
     }
 
     public Mono<VideoData> getVideo(String videoId) {
@@ -55,10 +51,7 @@ public class InvidiousService {
         var variables = Map.of("videoId", videoId);
 
         return race("/api/v1/videos/{videoId}", variables, VideoData.class)
-                .map(this::mapVideoInfo)
-                .doOnError(error -> {
-                    log.error("Failed to fetch video {}: {}", videoId, error.getMessage());
-                });
+                .map(this::mapVideoInfo);
     }
 
     private VideoInfo mapVideoInfo(VideoData video) {
@@ -68,7 +61,7 @@ public class InvidiousService {
             videoType = VideoType.UPCOMING;
         }
 
-        if (video.isLiveNow()) {
+        if (video.isLiveNow() || video.isPostLiveDvr()) {
             videoType = VideoType.LIVE;
         }
 

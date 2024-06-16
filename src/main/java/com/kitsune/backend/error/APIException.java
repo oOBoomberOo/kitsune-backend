@@ -1,5 +1,6 @@
 package com.kitsune.backend.error;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 @Getter
 @Setter
+@JsonIgnoreProperties({"stackTrace", "cause", "localizedMessage", "suppressed"})
 public class APIException extends RuntimeException implements Response<ErrorResponse> {
     HttpStatus status;
     String message;
