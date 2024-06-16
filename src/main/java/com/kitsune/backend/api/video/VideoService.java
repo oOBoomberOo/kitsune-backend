@@ -93,4 +93,16 @@ public class VideoService {
         video.setStatus(VideoStatus.COMPLETED);
         videoRepository.save(video);
     }
+
+    public VideoResponse restart(String videoId) {
+        var video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new IllegalArgumentException("Video not found"));
+
+        if (video.isExpired()) {
+            return null;
+        }
+
+        start(video);
+        return new VideoResponse(video);
+    }
 }

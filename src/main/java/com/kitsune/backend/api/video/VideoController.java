@@ -50,4 +50,9 @@ public class VideoController {
         return recordService.findAllRecords(videoId, request);
     }
 
+    @PostMapping(value = "/{videoId}/restart", produces = MediaType.APPLICATION_JSON_VALUE)
+    public VideoResponse restartVideo(@PathVariable String videoId) {
+        return videoService.restart(videoId);
+    }
+
 }
