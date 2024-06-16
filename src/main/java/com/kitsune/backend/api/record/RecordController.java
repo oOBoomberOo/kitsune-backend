@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class RecordController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Record> listRecords(@Valid @RequestParam @ParameterObject ListRecordRequest request) {
+    public Page<Record> listRecords(@Valid @RequestParam @ParameterObject RecordRequest request) {
         throw new NotImplementedException();
     }
 

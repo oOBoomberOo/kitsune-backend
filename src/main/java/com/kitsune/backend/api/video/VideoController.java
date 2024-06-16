@@ -1,36 +1,53 @@
 package com.kitsune.backend.api.video;
 
-import com.kitsune.backend.api.record.ListRecordRequest;
-import com.kitsune.backend.api.tracker.ListTrackerRequest;
-import com.kitsune.backend.entity.Tracker;
+import com.kitsune.backend.api.record.RecordRequest;
+import com.kitsune.backend.api.record.RecordService;
+import com.kitsune.backend.entity.Record;
 import com.kitsune.backend.entity.Video;
+import com.kitsune.backend.model.SearchRequest;
+import com.kitsune.backend.youtube.InvidiousService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/videos")
+@RequiredArgsConstructor
 public class VideoController {
 
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Video> listVideos(@Valid @RequestParam @ParameterObject ListVideoRequest request) {
-        throw new NotImplementedException();
+    private final VideoService videoService;
+    private final InvidiousService invidiousService;
+    private final RecordService recordService;
+
+    @GetMapping(value = "/{videoId}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<VideoInfo> getVideoInfo(@PathVariable String videoId) {
+        return invidiousService.getVideoInfo(videoId);
     }
 
-    @GetMapping(value = "/{videoId}/trackers", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Tracker> listRecords(@PathVariable String videoId, @Valid @RequestParam @ParameterObject ListTrackerRequest request) {
-        throw new NotImplementedException();
+    @GetMapping(value = "/{videoId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Video getVideo(@PathVariable String videoId) {
+        return videoService.getVideo(videoId);
+    }
+
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Video addVideo(@Valid @RequestBody UploadVideoRequest request) {
+        return videoService.uploadVideo(request);
+    }
+
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<Video> listVideos(@ParameterObject SearchRequest request) {
+        return videoService.findAllVideos(request);
     }
 
     @GetMapping(value = "/{videoId}/records", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Record> listRecords(@PathVariable String videoId, @Valid @RequestParam @ParameterObject ListRecordRequest request) {
-        throw new NotImplementedException();
+    public Page<Record> listRecords(@PathVariable String videoId, @ParameterObject RecordRequest request) {
+        return recordService.findAllRecords(videoId, request);
     }
-
 
 }

@@ -1,0 +1,40 @@
+ALTER TABLE trackers
+    DROP CONSTRAINT fk_trackers_on_video;
+
+ALTER TABLE videos
+    ADD end_at TIMESTAMP WITHOUT TIME ZONE;
+
+ALTER TABLE videos
+    ADD panic_message VARCHAR(255);
+
+ALTER TABLE videos
+    ADD start_at TIMESTAMP WITHOUT TIME ZONE;
+
+ALTER TABLE videos
+    ADD status SMALLINT;
+
+ALTER TABLE videos
+    ADD type SMALLINT;
+
+ALTER TABLE videos
+    ALTER COLUMN end_at SET NOT NULL;
+
+ALTER TABLE videos
+    ALTER COLUMN start_at SET NOT NULL;
+
+ALTER TABLE videos
+    ALTER COLUMN status SET NOT NULL;
+
+ALTER TABLE videos
+    ALTER COLUMN type SET NOT NULL;
+
+DROP TABLE trackers CASCADE;
+
+ALTER TABLE videos
+    ALTER COLUMN added_at SET NOT NULL;
+
+ALTER TABLE records
+    ALTER COLUMN created_at SET NOT NULL;
+
+ALTER TABLE records
+    ALTER COLUMN views SET NOT NULL;

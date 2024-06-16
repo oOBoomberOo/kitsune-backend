@@ -1,17 +1,23 @@
 package com.kitsune.backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.kitsune.backend.constant.Time;
+import com.kitsune.backend.model.VideoStatus;
+import com.kitsune.backend.model.VideoType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.generator.EventType;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 @Entity
 @Table(name = "videos")
@@ -20,8 +26,48 @@ public class Video {
     String id;
 
     @Column
-    String title;
+    @Builder.Default
+    String title = "";
+
+    @Generated(event = EventType.INSERT, sql = "now()")
+    @Column(nullable = false, updatable = false)
+    LocalDateTime addedAt;
+
+    @Column(nullable = false)
+    @NotNull
+    VideoType type;
+
+    @Column(nullable = false)
+    @NotNull
+    @With
+    VideoStatus status;
+
+    @Column(nullable = false)
+    @NotNull
+    @Builder.Default
+    LocalDateTime startAt = LocalDateTime.now();
+
+    @Column(nullable = false)
+    @NotNull
+    @Builder.Default
+    LocalDateTime endAt = Time.MAX;
 
     @Column
-    LocalDateTime addedAt;
+    @With
+    String panicMessage;
+
+    @OneToMany(mappedBy = "video")
+    @ToString.Exclude
+    List<Record> records;
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(endAt);
+    }
+
+    public static Specification<Video> search(String search) {
+        return (root, query, builder) -> builder.like(
+                builder.lower(root.get("title")),
+                "%" + search.toLowerCase() + "%"
+        );
+    }
 }
