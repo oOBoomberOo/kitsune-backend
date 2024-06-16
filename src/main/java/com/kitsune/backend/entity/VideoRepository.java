@@ -15,7 +15,6 @@ public interface VideoRepository extends JpaRepository<Video, String>, JpaSpecif
                 WHERE
                     v.status IN :statuses
                     AND v.startAt <= CURRENT_TIMESTAMP
-                    AND v.endAt >= CURRENT_TIMESTAMP
             """)
     List<Video> findRunningVideos(List<VideoStatus> statuses);
 }
