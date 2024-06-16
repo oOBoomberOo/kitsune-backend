@@ -1,6 +1,7 @@
 package com.kitsune.backend.api.record;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.kitsune.backend.constant.PostgresTime;
 import com.kitsune.backend.model.SortOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,9 @@ public class RecordRequest {
     int interval = 5;
 
     @Builder.Default
-    LocalDateTime after = LocalDateTime.MIN;
+    LocalDateTime after = PostgresTime.MIN;
     @Builder.Default
-    LocalDateTime before = LocalDateTime.MAX;
+    LocalDateTime before = PostgresTime.MAX;
 
     @Builder.Default
     int page = 1;

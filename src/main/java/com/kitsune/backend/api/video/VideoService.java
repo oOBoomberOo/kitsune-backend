@@ -1,8 +1,9 @@
 package com.kitsune.backend.api.video;
 
-import com.kitsune.backend.constant.Time;
+import com.kitsune.backend.constant.PostgresTime;
 import com.kitsune.backend.entity.Video;
 import com.kitsune.backend.entity.VideoRepository;
+import com.kitsune.backend.entity.VideoResponse;
 import com.kitsune.backend.model.SearchRequest;
 import com.kitsune.backend.model.VideoStatus;
 import com.kitsune.backend.youtube.InvidiousService;
@@ -37,8 +38,9 @@ public class VideoService {
             VideoStatus.PANIC
     );
 
-    public Page<Video> findAllVideos(SearchRequest request) {
-        return videoRepository.findAll(Video.search(request.getSearch()), request.toPageRequest("addedAt"));
+    public Page<VideoResponse> findAllVideos(SearchRequest request) {
+        return videoRepository.findAll(Video.search(request.getSearch()), request.toPageRequest("addedAt"))
+                .map(VideoResponse::new);
     }
 
     public List<Video> findVideoToBeRecord() {
@@ -51,17 +53,18 @@ public class VideoService {
         return videoRepository.findVideosByStatusIn(ERROR);
     }
 
-    public Video getVideo(@NotNull String videoId) {
+    public VideoResponse getVideo(@NotNull String videoId) {
         return videoRepository.findById(videoId)
+                .map(VideoResponse::new)
                 .orElseThrow(() -> new IllegalArgumentException("Video not found"));
     }
 
-    public Video uploadVideo(@Valid UploadVideoRequest request) {
+    public VideoResponse uploadVideo(@Valid UploadVideoRequest request) {
         var videoInfo = invidiousService.getVideoInfo(request.getVideoId()).blockOptional()
                 .orElseThrow(() -> new IllegalArgumentException("Video not found"));
 
         var startAt = Objects.requireNonNullElse(request.getStartAt(), videoInfo.getPublishDate());
-        var endAt = Objects.requireNonNullElse(request.getEndAt(), Time.MAX);
+        var endAt = Objects.requireNonNullElse(request.getEndAt(), PostgresTime.MAX);
 
         var video = Video.builder()
                 .id(request.getVideoId())
@@ -72,12 +75,12 @@ public class VideoService {
                 .title(videoInfo.title)
                 .build();
 
-        return videoRepository.save(video);
+        return new VideoResponse(videoRepository.save(video));
     }
 
-    public Video start(Video video) {
+    public void start(Video video) {
         video.setStatus(VideoStatus.ACTIVE);
-        return videoRepository.save(video);
+        videoRepository.save(video);
     }
 
     public void panic(Video video, String message) {
@@ -86,8 +89,8 @@ public class VideoService {
         videoRepository.save(video);
     }
 
-    public Video finish(Video video) {
+    public void finish(Video video) {
         video.setStatus(VideoStatus.COMPLETED);
-        return videoRepository.save(video);
+        videoRepository.save(video);
     }
 }

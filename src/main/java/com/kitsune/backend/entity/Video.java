@@ -1,6 +1,7 @@
 package com.kitsune.backend.entity;
 
-import com.kitsune.backend.constant.Time;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kitsune.backend.constant.PostgresTime;
 import com.kitsune.backend.model.VideoStatus;
 import com.kitsune.backend.model.VideoType;
 import jakarta.persistence.*;
@@ -35,11 +36,13 @@ public class Video {
 
     @Column(nullable = false)
     @NotNull
+    @Enumerated(EnumType.STRING)
     VideoType type;
 
     @Column(nullable = false)
     @NotNull
     @With
+    @Enumerated(EnumType.STRING)
     VideoStatus status;
 
     @Column(nullable = false)
@@ -50,7 +53,7 @@ public class Video {
     @Column(nullable = false)
     @NotNull
     @Builder.Default
-    LocalDateTime endAt = Time.MAX;
+    LocalDateTime endAt = PostgresTime.MAX;
 
     @Column
     @With
@@ -58,6 +61,7 @@ public class Video {
 
     @OneToMany(mappedBy = "video")
     @ToString.Exclude
+    @JsonIgnore
     List<Record> records;
 
     public boolean isExpired() {

@@ -2,8 +2,8 @@ package com.kitsune.backend.api.video;
 
 import com.kitsune.backend.api.record.RecordRequest;
 import com.kitsune.backend.api.record.RecordService;
-import com.kitsune.backend.entity.Record;
-import com.kitsune.backend.entity.Video;
+import com.kitsune.backend.entity.RecordResponse;
+import com.kitsune.backend.entity.VideoResponse;
 import com.kitsune.backend.model.SearchRequest;
 import com.kitsune.backend.youtube.InvidiousService;
 import jakarta.validation.Valid;
@@ -31,22 +31,22 @@ public class VideoController {
     }
 
     @GetMapping(value = "/{videoId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Video getVideo(@PathVariable String videoId) {
+    public VideoResponse getVideo(@PathVariable String videoId) {
         return videoService.getVideo(videoId);
     }
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Video addVideo(@Valid @RequestBody UploadVideoRequest request) {
+    public VideoResponse addVideo(@Valid @RequestBody UploadVideoRequest request) {
         return videoService.uploadVideo(request);
     }
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Video> listVideos(@ParameterObject SearchRequest request) {
+    public Page<VideoResponse> listVideos(@Valid @ParameterObject SearchRequest request) {
         return videoService.findAllVideos(request);
     }
 
     @GetMapping(value = "/{videoId}/records", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<Record> listRecords(@PathVariable String videoId, @ParameterObject RecordRequest request) {
+    public Page<RecordResponse> listRecords(@Valid @PathVariable String videoId, @ParameterObject RecordRequest request) {
         return recordService.findAllRecords(videoId, request);
     }
 

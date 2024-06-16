@@ -4,7 +4,6 @@ import com.kitsune.backend.api.record.RecordService;
 import com.kitsune.backend.api.video.VideoService;
 import com.kitsune.backend.entity.Record;
 import com.kitsune.backend.entity.Video;
-import com.kitsune.backend.model.VideoStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,7 +22,7 @@ public class YouTubeService {
     private final RecordService recordService;
     private final InvidiousService invidiousService;
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void fetchYouTube() {
         var videos = videoService.findVideoToBeRecord();
         log.info("Found {} videos to be recorded", videos.size());
@@ -39,10 +38,11 @@ public class YouTubeService {
         invidiousService.getVideoInfo(video.getId())
                 .subscribe(info -> {
                     video.setType(info.getType());
-                    video.setStatus(VideoStatus.ACTIVE);
 
                     if (video.isExpired()) {
-                        video.setStatus(VideoStatus.COMPLETED);
+                        videoService.finish(video);
+                    } else {
+                        videoService.start(video);
                     }
 
                     var record = Record.builder()
