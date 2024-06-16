@@ -2,9 +2,9 @@ spring.application.name: kitsune-backend
 
 spring:
   datasource:
-    url: "${DATABASE_URL}"
-    username: "${DATABASE_USER}"
-    password: "${DATABASE_PASS}"
+    url: "${DATABASE_URL:jdbc:postgresql://localhost:8081/dev?useSSL=false}"
+    username: "${DATABASE_USER:spring}"
+    password: "${DATABASE_PASS:secret}"
   flyway:
     baseline-on-migrate: true
     enabled: "${FLYWAY_ENABLED:true}"
