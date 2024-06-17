@@ -1,8 +1,8 @@
 package com.kitsune.backend.api.video;
 
+import com.kitsune.backend.constant.PostgresTime;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -14,12 +14,10 @@ import java.time.LocalDateTime;
 @Jacksonized
 @Schema
 public class UploadVideoRequest {
-    @NotBlank
-    String videoId;
+    @Builder.Default
+    LocalDateTime startAt = null;
 
-    @Nullable
-    LocalDateTime startAt;
-
-    @Nullable
-    LocalDateTime endAt;
+    @NotNull
+    @Builder.Default
+    LocalDateTime endAt = PostgresTime.MAX;
 }

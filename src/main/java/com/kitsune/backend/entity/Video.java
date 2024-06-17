@@ -41,7 +41,8 @@ public class Video {
     @NotNull
     @With
     @Enumerated(EnumType.STRING)
-    VideoStatus status;
+    @Builder.Default
+    VideoStatus status = VideoStatus.SCHEDULED;
 
     @Column(nullable = false)
     @NotNull

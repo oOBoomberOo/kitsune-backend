@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Jacksonized
 @JsonInclude
 public class VideoInfo {
+    String videoId;
     LocalDateTime uploadDate;
     LocalDateTime publishDate;
     VideoType type;

@@ -18,3 +18,6 @@ server:
 config:
   invidious:
     endpoints: "https://inv.tux.pizza,https://invidious.jing.rocks,https://invidious.incogniweb.net,https://vid.puffyan.us"
+  holodex:
+    endpoint: https://holodex.net/api/v2
+    api_key: "${HOLODEX_API_KEY}"

@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 @Builder
 @Jacksonized
 @JsonInclude
-public class VideoData {
+public class InvidiousVideo {
     String type;
     String title;
     String videoId;
