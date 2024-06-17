@@ -1,6 +1,7 @@
 package com.kitsune.backend.api.record;
 
 import com.kitsune.backend.entity.Record;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/records")
 @RequiredArgsConstructor
+@Tag(name = "Record API")
 public class RecordController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
