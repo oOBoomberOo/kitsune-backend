@@ -32,7 +32,7 @@ public class YouTubeService {
     private final InvidiousService invidiousService;
     private final HolodexService holodexService;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "${config.timing.schedule}")
     public void fetchYouTube() {
         var videos = videoService.findVideoToBeRecord();
         log.info("Found {} videos to be recorded", videos.size());

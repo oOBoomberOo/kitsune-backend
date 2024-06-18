@@ -21,3 +21,6 @@ config:
   holodex:
     endpoint: https://holodex.net/api/v2
     api_key: "${HOLODEX_API_KEY}"
+  timing:
+    # TODO: make IntelliJ IDEA not complain about this
+    schedule: "${TRACK_SCHEDULE:0 */5 * * * *}"
