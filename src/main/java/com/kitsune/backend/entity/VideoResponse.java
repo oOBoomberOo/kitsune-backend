@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 /**
  * DTO for {@link Video}
  */
-public record VideoResponse(String id, String title, LocalDateTime addedAt, @NotNull VideoType type,
+public record VideoResponse(@NotNull String id, @NotNull String title, @NotNull LocalDateTime addedAt,
+                            @NotNull VideoType type,
                             @NotNull VideoStatus status, @NotNull LocalDateTime startAt, @NotNull LocalDateTime endAt,
                             String panicMessage) implements Serializable {
     public VideoResponse(Video video) {

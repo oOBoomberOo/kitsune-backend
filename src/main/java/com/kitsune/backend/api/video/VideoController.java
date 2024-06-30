@@ -6,6 +6,7 @@ import com.kitsune.backend.entity.RecordResponse;
 import com.kitsune.backend.entity.Video;
 import com.kitsune.backend.entity.VideoResponse;
 import com.kitsune.backend.error.RaceException;
+import com.kitsune.backend.model.PageResponse;
 import com.kitsune.backend.model.SearchRequest;
 import com.kitsune.backend.youtube.YouTubeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +19,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -98,9 +98,9 @@ public class VideoController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved videos")
     })
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<VideoResponse> listVideos(@Valid @ParameterObject SearchRequest request) {
+    public PageResponse<VideoResponse> listVideos(@Valid @ParameterObject SearchRequest request) {
         var page = videoService.findAllVideos(request);
-        return new PagedModel<>(page);
+        return new PageResponse<>(page);
     }
 
     @Operation(summary = "List records", description = "List records of a video")
@@ -108,9 +108,9 @@ public class VideoController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved records")
     })
     @GetMapping(value = "/{videoId}/records", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<RecordResponse> listRecords(@Valid @PathVariable String videoId, @ParameterObject RecordRequest request) {
+    public PageResponse<RecordResponse> listRecords(@Valid @PathVariable String videoId, @ParameterObject RecordRequest request) {
         var page = recordService.findAllRecords(videoId, request);
-        return new PagedModel<>(page);
+        return new PageResponse<>(page);
     }
 
 }
