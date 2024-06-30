@@ -34,10 +34,22 @@ public class SearchRequest {
     }
 
     public PageRequest toPageRequest() {
-        return PageRequest.of(page - 1, pageSize);
+        var pageRequest = PageRequest.of(page - 1, pageSize);
+
+        if (pageRequest.getOffset() > Integer.MAX_VALUE) {
+            return PageRequest.of(0, Integer.MAX_VALUE);
+        }
+
+        return pageRequest;
     }
 
     public PageRequest toPageRequest(String... properties) {
-        return PageRequest.of(page - 1, pageSize, toSort(properties));
+        var pageRequest = PageRequest.of(page - 1, pageSize, toSort(properties));
+
+        if (pageRequest.getOffset() > Integer.MAX_VALUE) {
+            return PageRequest.of(0, Integer.MAX_VALUE, toSort(properties));
+        }
+
+        return pageRequest;
     }
 }
