@@ -2,15 +2,14 @@ package com.kitsune.backend.youtube;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kitsune.backend.serde.ZonedDateTimeDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -18,25 +17,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Jacksonized
 @JsonInclude
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class HolodexVideo {
     String type;
 
     @JsonProperty("available_at")
-    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-    LocalDateTime availableAt;
+    OffsetDateTime availableAt;
 
     @JsonProperty("start_scheduled")
-    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-    LocalDateTime startScheduled;
+    OffsetDateTime startScheduled;
 
     @JsonProperty("start_actual")
-    @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-    LocalDateTime startActual;
+    OffsetDateTime startActual;
 
     @JsonProperty("live_viewers")
     Long liveViewers;
 
-    public LocalDateTime getScheduledTime() {
+    public OffsetDateTime getScheduledTime() {
         if (startScheduled != null) {
             return startScheduled;
         }

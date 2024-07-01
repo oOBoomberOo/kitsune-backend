@@ -9,11 +9,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +39,12 @@ public class VideoService {
     );
 
     public Page<VideoResponse> findAllVideos(SearchRequest request) {
-        return videoRepository.findAll(Video.search(request.getSearch()), request.toPageRequest("addedAt"))
+        var spec = Specification.allOf(
+                Video.search(request.getSearch()),
+                Video.hasStatus(request.getStatus())
+        );
+
+        return videoRepository.findAll(spec, request.toPageRequest("addedAt"))
                 .map(VideoResponse::new);
     }
 
@@ -82,12 +88,13 @@ public class VideoService {
 
     public Mono<Video> uploadVideo(@NotNull VideoInfo info, @NotNull UploadVideoRequest request) {
         var startAt = Objects.requireNonNullElse(request.getStartAt(), info.getPublishDate());
+
         var video = Video.builder()
-                .id(info.videoId)
-                .type(info.type)
+                .id(info.getVideoId())
+                .type(info.getType())
                 .startAt(startAt)
                 .endAt(request.getEndAt())
-                .title(info.title)
+                .title(info.getTitle())
                 .build();
 
         return Mono.just(video)
@@ -116,7 +123,7 @@ public class VideoService {
                 .map(id -> {
                     var video = getVideoById(id);
                     video.setStatus(VideoStatus.COMPLETED);
-                    video.setEndAt(LocalDateTime.now());
+                    video.setEndAt(OffsetDateTime.now());
                     return new VideoResponse(videoRepository.save(video));
                 });
     }

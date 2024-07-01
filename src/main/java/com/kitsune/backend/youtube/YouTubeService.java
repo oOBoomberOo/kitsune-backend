@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Slf4j
 @Service
@@ -43,7 +43,7 @@ public class YouTubeService {
     }
 
     public void uploadRecord(Video video) {
-        var timestamp = LocalDateTime.now();
+        var timestamp = OffsetDateTime.now();
 
         getVideoInfo(video.getId())
                 .subscribe(info -> {

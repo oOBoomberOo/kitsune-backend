@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface RecordRepository extends JpaRepository<Record, UUID>, JpaSpecificationExecutor<Record> {
@@ -18,6 +18,6 @@ public interface RecordRepository extends JpaRepository<Record, UUID>, JpaSpecif
                     AND r.createdAt >= :after
                     AND r.createdAt <= :before
             """)
-    Page<Record> findRecordByInterval(String videoId, int interval, LocalDateTime after, LocalDateTime before, Pageable pageable);
+    Page<Record> findRecordByInterval(String videoId, int interval, OffsetDateTime after, OffsetDateTime before, Pageable pageable);
 
 }

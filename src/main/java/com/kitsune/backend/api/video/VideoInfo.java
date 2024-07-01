@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -16,21 +16,21 @@ import java.time.LocalDateTime;
 @JsonInclude
 public class VideoInfo {
     @NotNull
-    String videoId;
+    private String videoId;
     @NotNull
-    LocalDateTime uploadDate;
+    private OffsetDateTime uploadDate;
     @NotNull
-    LocalDateTime publishDate;
+    private OffsetDateTime publishDate;
     @NotNull
-    VideoType type;
+    private VideoType type;
     @NotNull
-    String author;
+    private String author;
     @NotNull
-    String title;
+    private String title;
 
     @ToString.Exclude
-    String description;
+    private String description;
 
     @NotNull
-    long views;
+    private long views;
 }

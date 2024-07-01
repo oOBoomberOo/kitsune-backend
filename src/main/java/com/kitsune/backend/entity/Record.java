@@ -2,9 +2,10 @@ package com.kitsune.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import net.minidev.json.annotate.JsonIgnore;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
@@ -15,6 +16,7 @@ import java.util.UUID;
 @ToString
 @Entity
 @Table(name = "records")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,7 +26,7 @@ public class Record {
     Long views;
 
     @Column(nullable = false, updatable = false)
-    LocalDateTime createdAt;
+    OffsetDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "video_id")

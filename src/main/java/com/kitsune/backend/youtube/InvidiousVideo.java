@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Data
 @Builder
 @Jacksonized
 @JsonInclude
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class InvidiousVideo {
     String type;
     String title;
@@ -34,13 +37,13 @@ public class InvidiousVideo {
         return premiereTimestamp != null;
     }
 
-    public LocalDateTime getPublished() {
-        return LocalDateTime.ofEpochSecond(published, 0, ZoneOffset.UTC);
+    public OffsetDateTime getPublished() {
+        return LocalDateTime.ofEpochSecond(published, 0, ZoneOffset.UTC).atOffset(ZoneOffset.UTC);
     }
 
-    public LocalDateTime getPublishedDate() {
+    public OffsetDateTime getPublishedDate() {
         if (premiereTimestamp != null) {
-            return LocalDateTime.ofEpochSecond(premiereTimestamp, 0, ZoneOffset.UTC);
+            return LocalDateTime.ofEpochSecond(premiereTimestamp, 0, ZoneOffset.UTC).atOffset(ZoneOffset.UTC);
         }
 
         return getPublished();

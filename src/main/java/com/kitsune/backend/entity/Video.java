@@ -6,11 +6,14 @@ import com.kitsune.backend.model.VideoType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +23,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "videos")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Video {
     @Id
     String id;
@@ -47,19 +51,19 @@ public class Video {
     @Column(nullable = false)
     @NotNull
     @Builder.Default
-    LocalDateTime startAt = LocalDateTime.now();
+    OffsetDateTime startAt = OffsetDateTime.now();
 
     @Column(nullable = false)
     @NotNull
     @Builder.Default
-    LocalDateTime endAt = PostgresTime.MAX;
+    OffsetDateTime endAt = PostgresTime.MAX;
 
     @Column
     @With
     String panicMessage;
 
     public boolean isExpired() {
-        return LocalDateTime.now().isAfter(endAt);
+        return OffsetDateTime.now().isAfter(endAt);
     }
 
     public static Specification<Video> search(String search) {
@@ -67,5 +71,13 @@ public class Video {
                 builder.lower(root.get("title")),
                 "%" + search.toLowerCase() + "%"
         );
+    }
+
+    public static Specification<Video> hasStatus(List<VideoStatus> status) {
+        if (status.isEmpty()) {
+            return (root, query, builder) -> builder.conjunction();
+        }
+
+        return (root, query, builder) -> root.get("status").in(status);
     }
 }

@@ -12,7 +12,7 @@ import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -23,12 +23,12 @@ import java.time.LocalDateTime;
 @Schema
 public class RecordRequest {
     @Builder.Default
-    int interval = 5;
+    private int interval = 5;
 
     @Builder.Default
-    LocalDateTime after = PostgresTime.MIN;
+    private OffsetDateTime after = PostgresTime.MIN;
     @Builder.Default
-    LocalDateTime before = PostgresTime.MAX;
+    private OffsetDateTime before = PostgresTime.MAX;
 
     @Builder.Default
     int page = 1;
@@ -43,6 +43,12 @@ public class RecordRequest {
     }
 
     public PageRequest toPageRequest(String... properties) {
-        return PageRequest.of(page - 1, pageSize, toSort(properties));
+        var pageRequest = PageRequest.of(page - 1, pageSize, toSort(properties));
+
+        if (pageRequest.getOffset() > Integer.MAX_VALUE) {
+            return PageRequest.of(0, Integer.MAX_VALUE, toSort(properties));
+        }
+
+        return pageRequest;
     }
 }

@@ -1,6 +1,7 @@
 package com.kitsune.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -19,28 +22,22 @@ import org.springframework.data.domain.Sort;
 @Schema
 public class SearchRequest {
     @Builder.Default
-    String search = "";
+    private String search = "";
 
     @Builder.Default
-    int page = 1;
+    private int page = 1;
     @Builder.Default
-    int pageSize = 100;
+    private int pageSize = 100;
 
     @Builder.Default
-    SortOrder sortOrder = SortOrder.DESC;
+    private SortOrder sortOrder = SortOrder.DESC;
+
+    @Builder.Default
+    @ArraySchema(schema = @Schema(implementation = VideoStatus.class))
+    private List<VideoStatus> status = List.of(VideoStatus.values());
 
     public Sort toSort(String... properties) {
         return sortOrder.getSort(properties);
-    }
-
-    public PageRequest toPageRequest() {
-        var pageRequest = PageRequest.of(page - 1, pageSize);
-
-        if (pageRequest.getOffset() > Integer.MAX_VALUE) {
-            return PageRequest.of(0, Integer.MAX_VALUE);
-        }
-
-        return pageRequest;
     }
 
     public PageRequest toPageRequest(String... properties) {
