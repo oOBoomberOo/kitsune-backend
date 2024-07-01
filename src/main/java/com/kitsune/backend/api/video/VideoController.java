@@ -28,7 +28,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/videos")
+@RequestMapping("/videos")
 @RequiredArgsConstructor
 @Tag(name = "Video API")
 public class VideoController {

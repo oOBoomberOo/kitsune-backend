@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/records")
+@RequestMapping("/records")
 @RequiredArgsConstructor
 @Tag(name = "Record API")
 public class RecordController {
