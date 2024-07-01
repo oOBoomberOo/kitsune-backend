@@ -1,5 +1,6 @@
 package com.kitsune.backend.api.video;
 
+import com.kitsune.backend.constant.PostgresTime;
 import com.kitsune.backend.entity.Video;
 import com.kitsune.backend.entity.VideoRepository;
 import com.kitsune.backend.entity.VideoResponse;
@@ -105,14 +106,16 @@ public class VideoService {
     public Mono<Video> startMono(Video video) {
         return Mono.just(video)
                 .publishOn(Schedulers.boundedElastic())
-                .map(this::start);
+                .map(it -> {
+                    video.setEndAt(PostgresTime.MAX);
+                    return start(video);
+                });
     }
 
     public Mono<VideoResponse> restartMono(String videoId) {
         return Mono.just(videoId)
                 .publishOn(Schedulers.boundedElastic())
                 .mapNotNull(id -> videoRepository.findById(id).orElse(null))
-                .mapNotNull(video -> video.isExpired() ? null : video)
                 .flatMap(this::startMono)
                 .map(VideoResponse::new);
     }
