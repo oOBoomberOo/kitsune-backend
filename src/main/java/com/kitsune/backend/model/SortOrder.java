@@ -6,8 +6,9 @@ public enum SortOrder {
     ASC,
     DESC;
 
-    public Sort getSort(String... properties) {
+    public Sort.Order getSort(String properties) {
         var direction = this == ASC ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return Sort.by(direction, properties);
+        return Sort.Order.by(properties)
+                .with(direction);
     }
 }

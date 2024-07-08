@@ -36,11 +36,13 @@ public class SearchRequest {
     @ArraySchema(schema = @Schema(implementation = VideoStatus.class))
     private List<VideoStatus> status = List.of(VideoStatus.values());
 
-    public Sort toSort(String... properties) {
-        return sortOrder.getSort(properties);
+    public Sort toSort(String properties) {
+        var noErrorFirst = Sort.Order.desc("panicMessage");
+        var byProperty = sortOrder.getSort(properties);
+        return Sort.by(noErrorFirst, byProperty);
     }
 
-    public PageRequest toPageRequest(String... properties) {
+    public PageRequest toPageRequest(String properties) {
         var pageRequest = PageRequest.of(page - 1, pageSize, toSort(properties));
 
         if (pageRequest.getOffset() > Integer.MAX_VALUE) {

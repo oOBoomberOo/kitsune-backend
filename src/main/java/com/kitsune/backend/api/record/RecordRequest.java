@@ -38,11 +38,11 @@ public class RecordRequest {
     @Builder.Default
     SortOrder sortOrder = SortOrder.DESC;
 
-    public Sort toSort(String... properties) {
-        return sortOrder.getSort(properties);
+    public Sort toSort(String properties) {
+        return Sort.by(sortOrder.getSort(properties));
     }
 
-    public PageRequest toPageRequest(String... properties) {
+    public PageRequest toPageRequest(String properties) {
         var pageRequest = PageRequest.of(page - 1, pageSize, toSort(properties));
 
         if (pageRequest.getOffset() > Integer.MAX_VALUE) {
