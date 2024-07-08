@@ -5,6 +5,7 @@ import com.kitsune.backend.api.video.VideoInfo;
 import com.kitsune.backend.api.video.VideoService;
 import com.kitsune.backend.entity.Record;
 import com.kitsune.backend.entity.Video;
+import com.kitsune.backend.error.RaceException;
 import com.kitsune.backend.model.VideoType;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,13 @@ public class YouTubeService {
         var timestamp = OffsetDateTime.now();
 
         getVideoInfo(video.getId())
+                .onErrorComplete(e -> {
+                    if (e instanceof RaceException r) {
+                        return r.getCauses().contains("Unknown status code 522");
+                    }
+
+                    return false;
+                })
                 .subscribe(info -> {
                     video.setType(info.getType());
 
