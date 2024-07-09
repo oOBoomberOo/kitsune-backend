@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -88,7 +89,7 @@ public class YouTubeService {
         var holodex = tuple.getT2();
 
         var videoType = getVideoType(invidious);
-        var publishDate = holodex.getScheduledTime();
+        var publishDate = Objects.requireNonNullElse(holodex.getScheduledTime(), invidious.getPublishedDate());
         var views = invidious.isLiveNow() ? holodex.getLiveViewers() : invidious.getViewCount();
 
         return VideoInfo.builder()
