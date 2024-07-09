@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 
 @Slf4j
@@ -35,7 +33,6 @@ public class HolodexService {
                 .retrieve()
                 .onStatus(status -> status.isSameCodeAs(HttpStatus.NOT_FOUND), response -> Mono.just(new UnknownHolodexVideoException(videoId)))
                 .bodyToMono(HolodexVideo.class)
-                .retryWhen(Retry.backoff(3, Duration.ofMillis(100)))
                 .onErrorReturn(UnknownHolodexVideoException.class, HolodexVideo.builder().build());
     }
 
