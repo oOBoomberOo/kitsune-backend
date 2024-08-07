@@ -22,6 +22,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -44,16 +45,18 @@ public class YouTubeService {
         }
     }
 
+    private static final Pattern IGNORED_ERROR = Pattern.compile("unknown status code", Pattern.CASE_INSENSITIVE);
+
     public void uploadRecord(Video video) {
         var timestamp = OffsetDateTime.now();
 
         getVideoInfo(video.getId())
                 .onErrorComplete(e -> {
                     if (e instanceof RaceException r) {
-                        return r.getCauses().contains("Unknown status code 522");
+                        return r.getCauses().stream().anyMatch(IGNORED_ERROR.asPredicate());
                     }
 
-                    return false;
+                    return IGNORED_ERROR.asPredicate().test(e.toString());
                 })
                 .subscribe(info -> {
                     video.setType(info.getType());
